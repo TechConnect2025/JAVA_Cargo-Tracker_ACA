@@ -1,0 +1,11 @@
+org/eclipse/cargotracker/domain/model/handling/HandlingEventTest.class
+org/eclipse/cargotracker/application/BookingServiceTest.class
+org/eclipse/cargotracker/application/BookingServiceTestDataGenerator.class
+org/eclipse/cargotracker/domain/model/handling/HandlingHistoryTest.class
+org/eclipse/cargotracker/domain/model/cargo/CargoTest$1.class
+org/eclipse/cargotracker/domain/model/cargo/ItineraryTest.class
+org/eclipse/cargotracker/domain/model/cargo/RouteSpecificationTest.class
+org/eclipse/cargotracker/scenario/CargoLifecycleScenarioTest.class
+org/eclipse/cargotracker/infrastructure/routing/ExternalRoutingServiceTest.class
+org/eclipse/cargotracker/application/HandlingEventServiceTest.class
+org/eclipse/cargotracker/domain/model/cargo/CargoTest.class

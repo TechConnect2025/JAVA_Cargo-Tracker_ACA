@@ -1,0 +1,10 @@
+/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/test/java/org/eclipse/cargotracker/application/BookingServiceTest.java
+/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/test/java/org/eclipse/cargotracker/application/BookingServiceTestDataGenerator.java
+/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/test/java/org/eclipse/cargotracker/application/HandlingEventServiceTest.java
+/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/test/java/org/eclipse/cargotracker/domain/model/cargo/CargoTest.java
+/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/test/java/org/eclipse/cargotracker/domain/model/cargo/ItineraryTest.java
+/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/test/java/org/eclipse/cargotracker/domain/model/cargo/RouteSpecificationTest.java
+/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/test/java/org/eclipse/cargotracker/domain/model/handling/HandlingEventTest.java
+/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/test/java/org/eclipse/cargotracker/domain/model/handling/HandlingHistoryTest.java
+/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/test/java/org/eclipse/cargotracker/infrastructure/routing/ExternalRoutingServiceTest.java
+/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/test/java/org/eclipse/cargotracker/scenario/CargoLifecycleScenarioTest.java

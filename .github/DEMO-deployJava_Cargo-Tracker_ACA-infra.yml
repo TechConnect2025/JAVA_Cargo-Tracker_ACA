@@ -1,0 +1,256 @@
+name: Migrating Java Application to ACA 
+
+on:
+# Triggers the workflow on push events on the main branch - Tech Connect Demo 1
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '*.md'
+      - '*.png' 
+  workflow_dispatch:
+    inputs:
+      disambiguationSuffix:
+        description: "Included in names to disambiguate. Get from another pipeline execution"
+        required: true
+      region:
+        description: "Azure region for resources"
+        required: true
+        default: westeurope
+  repository_dispatch:
+
+env:
+  acr_name: 'cargotrackeracr.azurecr.io'
+  azCliVersion: 2.40.0
+  azureCredentials: ${ secrets.AZURE_CREDENTIALS }
+  containerApp: 'javacargotrackeraca0'
+  dbName: libAksdb${{ github.run_id }}${{ github.run_number }}
+  dbAdminUser: liberty
+  dbPassword: libAksDbpswrd123${{ github.run_id }}${{ github.run_number }}
+  deployment_bicep_path: |
+       infra/main.bicep
+  dockerfile_path: |
+       target/Dockerfile
+  fw_private_ip: '10.0.0.4'
+  hub_vnet: 'hub-vnet'
+  hub_rg: 'cargotracker-hub-westeurope'
+  image_tag: ${{ github.sha }}
+  image_name: 'cargotracker'
+  location: westeurope
+  namespace: 'cargotracker'
+  replicas: 1
+  spoke_rg: 'cargotracker-spoke-westeurope'
+  spoke_vnet: 'spoke-vnet'
+
+
+jobs: 
+# Deploy Hub VNet
+ hub_networking:
+  runs-on: ubuntu-latest
+  steps:
+  - name: checkout code
+    uses: actions/checkout@main
+  - name: azure login
+    uses: azure/login@v1
+    with:
+      creds: ${{ secrets.AZURE_CREDENTIALS }}
+      environment: 'AzureCloud'
+  - name: Azure CLI -Deploy Bicep Files
+    uses: Azure/CLI@v1
+    with:
+      inlineScript: |
+        #!/bin/bash
+        az group create -l westeurope -n ${{ env.HUB_RG }}
+        az group create -l westeurope -n ${{ env.SPOKE_RG }}
+  - name: hub networking
+    uses: azure/arm-deploy@v1
+    with:
+      scope: resourcegroup
+      subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
+      resourceGroupName: ${{ env.HUB_RG }}
+      template: ./infra/IBMLiberty_bicep/modules/hub_network.bicep
+      parameters: >
+        ./infra/IBMLiberty_bicep/action_params/hub_network.parameters.json
+        location="${{ env.location }}"
+        hubVnetName="${{ env.HUB_VNET }}"
+      deploymentName: hub-networking-github-actions
+
+ # Deploy Bastion into Hub VNet
+ deploy_bastion:
+  needs: hub_networking
+  runs-on: ubuntu-latest
+  steps:
+  - name: checkout code
+    uses: actions/checkout@main
+  - name: azure login
+    uses: azure/login@v1
+    with:
+      creds: ${{ secrets.AZURE_CREDENTIALS }}
+  - name: deploy_bastion
+    uses: azure/arm-deploy@v1
+    with:
+      scope: resourcegroup
+      subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
+      resourceGroupName: ${{ env.hub_rg }}
+      template: ./infra/IBMLiberty_bicep/modules/bastion.bicep
+      parameters: >
+        ./infra/IBMLiberty_bicep/action_params/bastion.parameters.json
+        location="${{ env.location }}"
+        hubVnetName="${{ env.HUB_VNET }}"
+      deploymentName: bastion-github-actions
+ 
+ # Deploy Azure Firewall into Hub VNet
+ deploy_firewall:
+  needs: hub_networking
+  runs-on: ubuntu-latest
+  steps:
+  - name: checkout code
+    uses: actions/checkout@main
+  - name: azure login
+    uses: azure/login@v1
+    with:
+      creds: ${{ secrets.AZURE_CREDENTIALS }}
+  - name: deploy_jumpbox
+    uses: azure/arm-deploy@v1
+    with:
+      scope: resourcegroup
+      subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
+      resourceGroupName: ${{ env.hub_rg }}
+      template: ./infra/IBMLiberty_bicep/modules/firewall.bicep
+      parameters: >
+        ./infra/IBMLiberty_bicep/action_params/firewall.parameters.json
+        location="${{ env.location }}"
+        hubVnetName="${{ env.hub_vnet}}"
+        fwPrivateIP="${{ env.fw_private_ip }}"
+      deploymentName: firewall-github-actions
+      
+ #Deploy Spoke VNet
+ spoke_networking:
+  needs: deploy_firewall
+  runs-on: ubuntu-latest
+  steps:
+  - name: checkout code
+    uses: actions/checkout@main
+  - name: azure login
+    uses: azure/login@v1
+    with:
+      creds: ${{ secrets.AZURE_CREDENTIALS }}
+  - name: spoke networking
+    uses: azure/arm-deploy@v1
+    with:
+      scope: resourcegroup
+      subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+      resourceGroupName: ${{ env.spoke_rg }}
+      template: ./infra/IBMLiberty_bicep/modules/spoke_network.bicep
+      parameters: >
+        ./infra/IBMLiberty_bicep/action_params/spoke_networking.parameters.json
+        location="${{ env.location }}"
+        spokeVnetName="${{ env.spoke_vnet }}"
+      deploymentName: spoke-networking-github-actions
+
+ # Peer Hub-VNet to Spoke-VNet
+ setup_peering:
+  needs: [hub_networking,spoke_networking]
+  runs-on: ubuntu-latest
+  steps:
+  - name: checkout code
+    uses: actions/checkout@main
+  - name: azure login
+    uses: azure/login@v1
+    with:
+      creds: ${{ secrets.AZURE_CREDENTIALS }}
+  - name: hub_peering
+    uses: azure/arm-deploy@v1
+    with:
+      scope: resourcegroup
+      subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+      resourceGroupName: ${{ env.hub_rg }}
+      template: ./infra/IBMLiberty_bicep/modules/peering.bicep
+      parameters: >
+        localVnetName="${{ env.hub_vnet }}"
+        remoteVnetName="${{ env.spoke_vnet }}"
+        rgToPeer="${{ env.spoke_rg }}"
+      deploymentName: hub-peering-github-actions
+  - name: spoke_peering
+    uses: azure/arm-deploy@v1
+    with:
+      scope: resourcegroup
+      subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+      resourceGroupName: ${{ env.spoke_rg }}
+      template: ./infra/IBMLiberty_bicep/modules/peering.bicep
+      parameters: >
+        localVnetName="${{ env.spoke_vnet }}" 
+        remoteVnetName="${{ env.hub_vnet}}" 
+        rgToPeer="${{ env.hub_rg}}"
+      deploymentName: spoke-peering-github-actions
+
+ # Set up database for use by application.
+ deploy_db:
+  needs:  setup_peering
+  runs-on: ubuntu-latest
+  steps:
+    - uses: azure/login@v1
+      id: azure-login
+      with:
+        creds:  ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Set Up Azure Postgresql to Test dbTemplate
+      id: setup-postgresql
+      uses: azure/CLI@v1
+      with:
+        azcliversion: ${{ env.azCliVersion }}
+        inlineScript: |
+          echo "Deploy DB with name " ${{ env.dbName }}
+          az postgres server create \
+          --resource-group ${{ env.spoke_rg }} \
+          --name ${{ env.dbName }}  \
+          --location ${{ env.location }} \
+          --admin-user ${{ env.dbAdminUser }} \
+          --ssl-enforcement Disabled \
+          --public-network-access Enabled \
+          --admin-password ${{ env.dbPassword }} \
+          --sku-name B_Gen5_1
+          echo "Allow Access To Azure Services"
+          az postgres server firewall-rule create \
+          -g ${{ env.spoke_rg }} \
+          -s ${{ env.dbName }} \
+          -n "AllowAllWindowsAzureIps" \
+          --start-ip-address "0.0.0.0" \
+          --end-ip-address "0.0.0.0"
+
+ # Build app, push to ACR and apply it to Open Liberty servers running on ACA.
+ deploy-cargo-tracker:
+  needs: [deploy_db, spoke_networking]
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - uses: azure/login@v1
+      id: azure-login
+      with:
+        creds:  ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Checkout cargotracker
+      uses: actions/checkout@v4
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }} 
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ env.acr_name }}.azurecr.io
+        username: ${{ secrets.AZURE_CLIENT_ID }}
+        password: ${{ secrets.AZURE_CLIENT_SECRET }}
+    - name: Build image and upload to ACR
+      run: |
+        echo "build image, tag and push image"
+        docker build -t ${{ env.image_name }}:${{ env.image_tag }} . -f ${{ env.dockerfile_path }}
+        docker tag ${{ env.image_name }}:${{ env.image_tag }} ${{ env.acr_name }}/${{ env.image_name }}:${{ env.image_tag }}
+        docker push ${{ env.acr_name }}/${{ env.image_name }}:${{ env.image_tag }}
+    - name: Deploy Container App
+      run: |
+        echo "Installing containerapp extension"
+        az extension add --name containerapp
+        echo "Updating container app"
+        az containerapp update --name ${{ env.containerApp }} --resource-group ${{ env.spoke_rg }} --image ${{ env.acr_name }}/${{ env.image_name}}:${{ env.image_tag }} 

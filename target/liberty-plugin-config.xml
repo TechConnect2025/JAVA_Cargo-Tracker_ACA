@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<liberty-plugin-config>
+    <activeBuildProfiles>
+        <profileId>openLibertyOnAks</profileId>
+        <profileId>payara</profileId>
+    </activeBuildProfiles>
+    <installDirectory>/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/target/liberty/wlp</installDirectory>
+    <serverDirectory>/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/target/liberty/wlp/usr/servers/defaultServer</serverDirectory>
+    <userDirectory>/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/target/liberty/wlp/usr</userDirectory>
+    <serverOutputDirectory>/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/target/wlp-package/defaultServer</serverOutputDirectory>
+    <serverName>defaultServer</serverName>
+    <configDirectory>/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/main/liberty/config</configDirectory>
+    <configFile>/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/main/liberty/config/server.xml</configFile>
+    <bootstrapProperties>
+        <db.port.number>${db.port.number}</db.port.number>
+        <db.user>${db.user}</db.user>
+        <db.password>${db.password}</db.password>
+        <db.server.name>${db.server.name}</db.server.name>
+        <db.name>${db.name}</db.name>
+    </bootstrapProperties>
+    <appsDirectory>apps</appsDirectory>
+    <looseApplication>true</looseApplication>
+    <stripVersion>false</stripVersion>
+    <installAppPackages>project</installAppPackages>
+    <applicationFilename>cargo-tracker.war.xml</applicationFilename>
+    <assemblyArtifact>
+        <groupId>io.openliberty</groupId>
+        <artifactId>openliberty-kernel</artifactId>
+        <version>24.0.0.10</version>
+        <type>zip</type>
+    </assemblyArtifact>
+    <assemblyArchive>/Users/mbaker-ms-work/.m2/repository/io/openliberty/openliberty-kernel/24.0.0.10/openliberty-kernel-24.0.0.10.zip</assemblyArchive>
+    <assemblyInstallDirectory>/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/target/liberty</assemblyInstallDirectory>
+    <refresh>false</refresh>
+    <installAppsConfigDropins>/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/target/liberty/wlp/usr/servers/defaultServer/configDropins/defaults/install_apps_configuration_1491924271.xml</installAppsConfigDropins>
+    <projectType>war</projectType>
+    <projectCompileDependency>org.apache.commons:commons-lang3:3.8.1</projectCompileDependency>
+    <projectCompileDependency>org.primefaces:primefaces:8.0</projectCompileDependency>
+    <projectCompileDependency>org.glassfish.jersey.media:jersey-media-sse:3.0.3</projectCompileDependency>
+    <projectCompileDependency>jakarta.inject:jakarta.inject-api:2.0.0</projectCompileDependency>
+    <projectCompileDependency>org.postgresql:postgresql:42.3.9</projectCompileDependency>
+    <projectCompileDependency>org.checkerframework:checker-qual:3.5.0</projectCompileDependency>
+    <projectCompileDependency>com.h2database:h2:1.4.200</projectCompileDependency>
+    <warSourceDirectory>/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/main/webapp</warSourceDirectory>
+</liberty-plugin-config>

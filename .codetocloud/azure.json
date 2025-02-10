@@ -1,0 +1,26 @@
+{
+  "projectType": "azd",
+  "iacTypes": [
+    "bicep"
+  ],
+  "resources": [
+    {
+      "type": "azurecontainerapp",
+      "instances": [
+        {
+          "name": "javacargotrackeraca0"
+        }
+      ]
+    }
+  ],
+  "bindings": [],
+  "services": [
+    {
+      "host": "${azurecontainerapp.javacargotrackeraca0}",
+      "language": "java",
+      "project": "./",
+      "port": "4848"
+    }
+  ],
+  "settings": []
+}

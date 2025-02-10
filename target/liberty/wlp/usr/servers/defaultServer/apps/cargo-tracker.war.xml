@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archive>
+    <dir sourceOnDisk="/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/src/main/webapp" targetInArchive="/"/>
+    <dir sourceOnDisk="/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/target/classes" targetInArchive="/WEB-INF/classes"/>
+    <file sourceOnDisk="/Users/mbaker-ms-work/.m2/repository/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar" targetInArchive="/WEB-INF/lib/commons-lang3-3.8.1.jar"/>
+    <file sourceOnDisk="/Users/mbaker-ms-work/.m2/repository/org/primefaces/primefaces/8.0/primefaces-8.0.jar" targetInArchive="/WEB-INF/lib/primefaces-8.0.jar"/>
+    <file sourceOnDisk="/Users/mbaker-ms-work/.m2/repository/org/glassfish/jersey/media/jersey-media-sse/3.0.3/jersey-media-sse-3.0.3.jar" targetInArchive="/WEB-INF/lib/jersey-media-sse-3.0.3.jar"/>
+    <file sourceOnDisk="/Users/mbaker-ms-work/.m2/repository/jakarta/inject/jakarta.inject-api/2.0.0/jakarta.inject-api-2.0.0.jar" targetInArchive="/WEB-INF/lib/jakarta.inject-api-2.0.0.jar"/>
+    <file sourceOnDisk="/Users/mbaker-ms-work/.m2/repository/org/postgresql/postgresql/42.3.9/postgresql-42.3.9.jar" targetInArchive="/WEB-INF/lib/postgresql-42.3.9.jar"/>
+    <file sourceOnDisk="/Users/mbaker-ms-work/.m2/repository/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0.jar" targetInArchive="/WEB-INF/lib/checker-qual-3.5.0.jar"/>
+    <file sourceOnDisk="/Users/mbaker-ms-work/.m2/repository/com/h2database/h2/1.4.200/h2-1.4.200.jar" targetInArchive="/WEB-INF/lib/h2-1.4.200.jar"/>
+    <file sourceOnDisk="/Users/mbaker-ms-work/Documents/CAE_Main_Repo/JAVA_Cargo-Tracker_ACA/target/tmp/META-INF/MANIFEST.MF" targetInArchive="/META-INF/MANIFEST.MF"/>
+</archive>

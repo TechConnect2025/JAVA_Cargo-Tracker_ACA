@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "tags": {
+      "value": {
+          "env": "dev",
+          "dept": "it"
+      }
+    },
+    "spokeVnetCidr": {
+      "value": "10.1.0.0/16"
+    },
+    "controlPlaneVnetName": {
+      "value": "controlplane"
+    },
+    "controlPlaneSubnetCidr": {
+      "value": "10.1.0.0/22"
+    },
+    "computeVnetName": {
+      "value": "compute"
+    },
+    "computeSubnetCidr": {
+      "value": "10.1.4.0/22"
+    },
+    "acaSubnetName": {
+      "value": "acaSubnet"
+    },
+    "acaSubnetCidr": {
+      "value": "10.1.8.0/22"
+    }
+  }
+}
